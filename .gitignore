@@ -1,0 +1,37 @@
+# Maven build target directory
+target/
+*.class
+
+# Environment variables & API keys (CRITICAL - PREVENT API KEY / SECRET LEAKS)
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+credentials.json
+
+# Database & runtime generated files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+sidd-bot-demo.db
+
+# Log files
+*.log
+
+# IDE settings & metadata
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.classpath
+.project
+.vscode/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+till this.md
