@@ -142,22 +142,14 @@ public class ModelManager {
                     case KIMI -> builder.kimiApiKey(customApiKey);
                     default -> {}
                 }
-                return builder.build().chatResponseWithProvider(provider.getCode(), modelName, prompt);
+                return builder.build().chatResponse(modelName, prompt);
             } else {
                 return builder.build().chatResponse(modelName, prompt);
             }
         }
 
         if (aiClient != null) {
-            if (provider != null && provider != Provider.CUSTOM) {
-                return aiClient.chatResponseWithProvider(provider.getCode(), modelName, prompt);
-            }
             return aiClient.chatResponse(modelName, prompt);
-        }
-
-        if (provider != null && provider != Provider.CUSTOM) {
-            AiClient client = AiClient.builder().build();
-            return client.chatResponseWithProvider(provider.getCode(), modelName, prompt);
         }
 
         if (effectiveConfig != null && (effectiveConfig.getTemperature() != null || effectiveConfig.getMaxTokens() != null)) {
