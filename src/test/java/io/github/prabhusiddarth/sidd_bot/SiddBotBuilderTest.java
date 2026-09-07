@@ -18,8 +18,13 @@ class SiddBotBuilderTest {
     private static ModelManager stubModelManager() {
         return new ModelManager() {
             @Override
-            public String generateResponse(Model model, String prompt) {
-                return "[Stub]: " + prompt;
+            public io.github.prabhusiddarth.sidd_ai.ChatResponse chatResponse(
+                    Model model, String prompt, io.github.prabhusiddarth.sidd_bot.generation.GenerationConfig config) {
+                return new io.github.prabhusiddarth.sidd_ai.ChatResponse(
+                        "[Stub]: " + prompt,
+                        model != null ? model.getName() : "stub",
+                        0
+                );
             }
         };
     }

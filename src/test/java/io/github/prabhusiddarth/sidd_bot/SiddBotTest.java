@@ -15,8 +15,13 @@ class SiddBotTest {
     void setUp() {
         stubModelManager = new ModelManager() {
             @Override
-            public String generateResponse(Model model, String prompt) {
-                return "[Stub Response]: " + prompt;
+            public io.github.prabhusiddarth.sidd_ai.ChatResponse chatResponse(
+                    Model model, String prompt, io.github.prabhusiddarth.sidd_bot.generation.GenerationConfig config) {
+                return new io.github.prabhusiddarth.sidd_ai.ChatResponse(
+                        "[Stub Response]: " + prompt,
+                        model != null ? model.getName() : "stub",
+                        0
+                );
             }
         };
         bot = new SiddBot(stubModelManager);

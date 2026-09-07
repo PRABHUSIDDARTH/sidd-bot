@@ -24,12 +24,17 @@ class SiddBotContextTest {
         final List<String> capturedPrompts = new ArrayList<>();
 
         @Override
-        public String generateResponse(Model model, String prompt) {
+        public io.github.prabhusiddarth.sidd_ai.ChatResponse chatResponse(
+                Model model, String prompt, io.github.prabhusiddarth.sidd_bot.generation.GenerationConfig config) {
             capturedPrompts.add(prompt);
-            if (prompt.contains("fact")) {
-                return "Paris is known for the Eiffel Tower.";
-            }
-            return "The capital of France is Paris.";
+            String responseText = prompt.contains("fact")
+                    ? "Paris is known for the Eiffel Tower."
+                    : "The capital of France is Paris.";
+            return new io.github.prabhusiddarth.sidd_ai.ChatResponse(
+                    responseText,
+                    model != null ? model.getName() : "stub",
+                    0
+            );
         }
     }
 

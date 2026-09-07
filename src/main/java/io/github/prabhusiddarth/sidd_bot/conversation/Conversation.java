@@ -1,9 +1,9 @@
 package io.github.prabhusiddarth.sidd_bot.conversation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Conversation {
     private final String id;
@@ -15,7 +15,7 @@ public class Conversation {
 
     public Conversation(String id) {
         this.id = id;
-        this.messages = new ArrayList<>();
+        this.messages = new CopyOnWriteArrayList<>();
     }
 
     public String getId() {

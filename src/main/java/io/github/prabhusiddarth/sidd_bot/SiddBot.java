@@ -53,21 +53,10 @@ public class SiddBot {
     }
 
     public String chat(String conversationId, String userPrompt, GenerationConfig generationConfig) {
-        if (!promptGuard.isSafe(userPrompt)) {
-            throw new IllegalArgumentException("Prompt flag relates to unsafe content or prompt injection attempt.");
-        }
-
-        Conversation conversation = conversationManager.getOrCreateConversation(conversationId);
-        conversation.addMessage(Role.USER, userPrompt);
-
-        String fullPrompt = buildPromptWithContext(conversation);
         Model activeModel = modelManager.getActiveModel();
-        GenerationConfig configToUse = generationConfig != null ? generationConfig : defaultGenerationConfig;
-        String responseContent = modelManager.generateResponse(activeModel, fullPrompt, configToUse);
-
-        conversation.addMessage(Role.ASSISTANT, responseContent);
-        conversationManager.getStore().save(conversation);
-        return responseContent;
+        String modelName = activeModel != null ? activeModel.getName() : "default";
+        ChatResponse response = chatResponse(conversationId, modelName, userPrompt, generationConfig);
+        return response != null ? response.getContent() : null;
     }
 
     public String chatWithModel(String modelOrAlias, String userPrompt) {
@@ -83,29 +72,20 @@ public class SiddBot {
     }
 
     public String chatWithModel(String conversationId, String modelOrAlias, String userPrompt, GenerationConfig generationConfig) {
-        if (!promptGuard.isSafe(userPrompt)) {
-            throw new IllegalArgumentException("Prompt flag relates to unsafe content or prompt injection attempt.");
-        }
-
-        Conversation conversation = conversationManager.getOrCreateConversation(conversationId);
-        conversation.addMessage(Role.USER, userPrompt);
-
-        String fullPrompt = buildPromptWithContext(conversation);
-        Model model = modelManager.resolveModel(modelOrAlias);
-        GenerationConfig configToUse = generationConfig != null ? generationConfig : defaultGenerationConfig;
-        String responseContent = modelManager.generateResponse(model, fullPrompt, configToUse);
-
-        conversation.addMessage(Role.ASSISTANT, responseContent);
-        conversationManager.getStore().save(conversation);
-        return responseContent;
+        ChatResponse response = chatResponse(conversationId, modelOrAlias, userPrompt, generationConfig);
+        return response != null ? response.getContent() : null;
     }
 
     public ChatResponse chatResponse(String userPrompt) {
-        return chatResponse("default", modelManager.getActiveModel().getName(), userPrompt, null);
+        Model activeModel = modelManager.getActiveModel();
+        String modelName = activeModel != null ? activeModel.getName() : "default";
+        return chatResponse("default", modelName, userPrompt, null);
     }
 
     public ChatResponse chatResponse(String userPrompt, GenerationConfig generationConfig) {
-        return chatResponse("default", modelManager.getActiveModel().getName(), userPrompt, generationConfig);
+        Model activeModel = modelManager.getActiveModel();
+        String modelName = activeModel != null ? activeModel.getName() : "default";
+        return chatResponse("default", modelName, userPrompt, generationConfig);
     }
 
     public ChatResponse chatResponse(String conversationId, String modelOrAlias, String userPrompt) {
@@ -113,8 +93,12 @@ public class SiddBot {
     }
 
     public ChatResponse chatResponse(String conversationId, String modelOrAlias, String userPrompt, GenerationConfig generationConfig) {
+        if (userPrompt == null || userPrompt.isBlank()) {
+            throw new IllegalArgumentException("User prompt cannot be null or empty");
+        }
+
         if (!promptGuard.isSafe(userPrompt)) {
-            throw new IllegalArgumentException("Prompt flag relates to unsafe content or prompt injection attempt.");
+            throw new io.github.prabhusiddarth.sidd_bot.security.PromptInjectionException("Prompt flag relates to unsafe content or prompt injection attempt.");
         }
 
         Conversation conversation = conversationManager.getOrCreateConversation(conversationId);
