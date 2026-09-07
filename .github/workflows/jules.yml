@@ -1,0 +1,64 @@
+```yaml
+name: sidd-bot-jules
+
+project:
+  language: java
+  build_system: maven
+  java_version: 17
+  repository: PRABHUSIDDARTH/sidd-bot
+
+instructions:
+  - Read the README.md and pom.xml before making any changes.
+  - Understand the existing architecture before modifying code.
+  - Preserve the public API unless a breaking change is explicitly requested.
+  - Prefer small, focused, production-quality changes over large rewrites.
+  - Follow existing package structure, naming conventions, and coding style.
+  - Do not introduce unnecessary dependencies.
+  - Do not replace working architecture with frameworks or abstractions that are not needed.
+  - Keep SiddBot lightweight, modular, and developer-friendly.
+  - Treat SiddBot as a reusable Java SDK, not as an application-specific project.
+  - Maintain Java 17 compatibility.
+  - Pay special attention to thread safety, resource management, exception handling, and API stability.
+  - For persistence-related changes, verify both InMemory and SQLite implementations where applicable.
+  - For model/provider changes, preserve runtime model switching and existing provider abstractions.
+  - For security-related changes, preserve PromptGuard behavior and avoid weakening validation.
+  - Add or update unit tests for every behavioral change.
+  - Do not delete tests just to make the build pass.
+  - Run `mvn test` after code changes.
+  - Run `mvn clean test` for changes affecting build configuration, dependencies, or multiple modules/components.
+  - Run `mvn clean compile` when compilation verification is sufficient.
+  - Investigate and fix the root cause of test failures instead of masking them.
+  - Keep generated files, local databases, secrets, and environment files out of commits.
+  - Never commit API keys, tokens, `.env` files, credentials, or private configuration.
+  - Update README documentation when introducing user-facing APIs or features.
+  - Keep examples synchronized with the actual public API.
+  - Before finishing, review the git diff for accidental changes, dead code, debug output, and formatting issues.
+  - Provide a concise summary of changes, tests executed, and any remaining risks.
+
+workflow:
+  before_change:
+    - inspect repository structure
+    - inspect README.md
+    - inspect pom.xml
+    - inspect relevant source and test files
+    - identify existing patterns before introducing new ones
+
+  implementation:
+    - make the smallest correct change
+    - preserve backward compatibility
+    - add tests
+    - update documentation when necessary
+
+  validation:
+    - run `mvn test`
+    - inspect failures and fix root causes
+    - review final diff
+
+pull_request:
+  title_prefix: "jules:"
+  requirements:
+    - explain what changed
+    - explain why it changed
+    - list tests executed
+    - mention any compatibility considerations
+```
